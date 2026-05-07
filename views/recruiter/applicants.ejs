@@ -1,0 +1,158 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Applicants – HireFlow</title>
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-text">HireFlow</span>
+      <small>Recruiter Portal</small>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="/recruiter/dashboard" class="nav-item">
+        <span class="nav-icon">📊</span>
+        Dashboard
+      </a>
+      <a href="/post-job" class="nav-item">
+        <span class="nav-icon">➕</span>
+        Post a Job
+      </a>
+      <a href="/recruiter/profile" class="nav-item">
+        <span class="nav-icon">👤</span>
+        My Profile
+      </a>
+      <a href="/logout" class="nav-item nav-logout" style="margin-top: auto;">
+        <span class="nav-icon">🚪</span>
+        Logout
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <a href="/recruiter/profile" style="text-decoration: none; color: inherit; display: block;">
+        <div class="user-pill">
+          <div class="avatar"><%= user.name.charAt(0).toUpperCase() %></div>
+          <div>
+            <div class="user-name"><%= user.name %></div>
+            <div class="user-role">Hiring Manager</div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </aside>
+
+
+  <main class="main" style="background: url('/images/recruiter_bg.png') no-repeat center center fixed; background-size: cover; min-height: 100vh; position: relative;">
+    <!-- Overlay for better readability -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(4px); z-index: 0;"></div>
+    
+    <div style="position: relative; z-index: 1;">
+
+    <div class="topbar">
+      <div>
+        <h1>Applicants 👥</h1>
+        <p><%= job.title %> • <%= job.company %></p>
+      </div>
+    </div>
+
+    <% if(applications.length === 0){ %>
+
+      <div class="empty">
+        <h3>No Applicants Yet</h3>
+        <p>Applicants will appear here after students apply.</p>
+      </div>
+
+    <% } else { %>
+
+    <div class="cards">
+
+      <% applications.forEach(app => { %>
+
+      <div class="card">
+
+        <div class="avatar">
+          <%= app.student.name.charAt(0).toUpperCase() %>
+        </div>
+
+        <div class="name"><%= app.student.name %></div>
+
+        <div class="email"><%= app.student.email %></div>
+
+        <div class="badge
+          <%= app.status === 'Pending' ? 'pending' : '' %>
+          <%= app.status === 'Shortlisted' ? 'shortlisted' : '' %>
+          <%= app.status === 'Rejected' ? 'rejected' : '' %>
+        ">
+          <%= app.status %>
+        </div>
+
+        <!-- AI ATS Score -->
+        <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 4px; align-items: center;">
+          <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">AI Match Score</div>
+          <div style="font-size: 18px; font-weight: 800; color: <%= app.atsScore >= 80 ? '#16a34a' : (app.atsScore >= 50 ? '#ca8a04' : '#dc2626') %>;">
+            <%= app.atsScore %>%
+          </div>
+          <div style="width: 100%; height: 6px; background: #e2e8f0; border-radius: 10px; overflow: hidden; max-width: 120px;">
+            <div style="width: <%= app.atsScore %>%; height: 100%; background: <%= app.atsScore >= 80 ? '#16a34a' : (app.atsScore >= 50 ? '#ca8a04' : '#dc2626') %>;"></div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+
+          <% if(app.status === "Pending"){ %>
+
+          <form method="POST" action="/recruiter/update-status">
+            <input type="hidden" name="applicationId" value="<%= app._id %>">
+            <input type="hidden" name="jobId" value="<%= job._id %>">
+
+            <button class="btn green" name="status" value="Shortlisted">
+              Shortlist
+            </button>
+          </form>
+
+          <form method="POST" action="/recruiter/update-status">
+            <input type="hidden" name="applicationId" value="<%= app._id %>">
+            <input type="hidden" name="jobId" value="<%= job._id %>">
+
+            <button class="btn red" name="status" value="Rejected">
+              Reject
+            </button>
+          </form>
+
+          <% } %>
+
+          <a class="btn blue"
+            href="mailto:<%= app.student.email %>?subject=Regarding <%= job.title %>">
+            Mail
+          </a>
+
+          <a class="btn dark"
+            href="/recruiter/resume/<%= app._id %>" target="_blank">
+            Resume
+          </a>
+
+        </div>
+
+      </div>
+
+      <% }) %>
+
+    </div>
+
+    <% } %>
+
+    </div>
+  </main>
+
+</div>
+
+</body>
+</html>

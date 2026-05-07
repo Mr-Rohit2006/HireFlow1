@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Jobs</title>
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body class="main-body">
+
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-text">HireFlow</span>
+      <small>Student Portal</small>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item">Dashboard</a>
+      <a href="/jobs" class="nav-item active">Browse Jobs</a>
+      <a href="/my-applications" class="nav-item">My Applications</a>
+      <a href="/saved-jobs" class="nav-item">Saved Jobs</a>
+      <a href="/profile" class="nav-item">My Profile</a>
+      <a href="/logout" class="nav-item nav-logout">Logout</a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="user-pill">
+        <div class="avatar"><%= user.name.charAt(0).toUpperCase() %></div>
+        <div>
+          <div class="user-name"><%= user.name %></div>
+          <div class="user-role">Student</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main" style="background: url('/images/student_bg.png') no-repeat center center fixed; background-size: cover; min-height: 100vh; position: relative;">
+    <!-- Overlay for better readability -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(4px); z-index: 0;"></div>
+    
+    <div style="position: relative; z-index: 1;">
+    <div class="topbar">
+      <h1>Available Jobs</h1>
+      <p>Find your next opportunity</p>
+    </div>
+
+    <div class="search-container card" style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 12px; margin-bottom: 32px; padding: 16px; align-items: center; background: #fff;">
+      <div style="position: relative;">
+        <input type="text" id="searchInput" placeholder="Search job titles or companies..." style="width: 100%; padding-left: 40px; border: 1px solid var(--border); border-radius: 8px; height: 44px;">
+        <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-faint);">🔍</span>
+      </div>
+      
+      <select id="typeFilter" style="height: 44px; border: 1px solid var(--border); border-radius: 8px; background: #fff;">
+        <option value="">All Job Types</option>
+        <option>Full Time</option>
+        <option>Part Time</option>
+        <option>Internship</option>
+        <option>Remote</option>
+      </select>
+
+      <div style="position: relative;">
+        <input type="text" id="locationFilter" placeholder="Location" style="width: 100%; padding-left: 36px; border: 1px solid var(--border); border-radius: 8px; height: 44px;">
+        <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-faint);">📍</span>
+      </div>
+
+      <div style="position: relative;">
+        <input type="number" id="salaryFilter" placeholder="Min Salary" style="width: 100%; padding-left: 36px; border: 1px solid var(--border); border-radius: 8px; height: 44px;">
+        <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-faint);">💰</span>
+      </div>
+
+      <button onclick="filterJobs()" class="btn btn-primary" style="height: 44px; padding: 0 24px;">Search</button>
+    </div>
+
+    <div class="job-grid" id="jobGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px;">
+      <% jobs.forEach((job,index)=>{ %>
+      <div class="job-card card" 
+           style="display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s;"
+           onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='var(--shadow-lg)'"
+           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-sm)'"
+           data-title="<%= job.title %>"
+           data-company="<%= job.company %>"
+           data-desc="<%= job.description %>"
+           data-location="<%= job.location %>"
+           data-type="<%= job.jobType %>"
+           data-salary="<%= job.salary %>">
+
+        <div style="padding-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+            <div>
+              <h3 style="font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 4px;"><%= job.title %></h3>
+              <p style="color: var(--primary); font-weight: 700; font-size: 14px;"><%= job.company %></p>
+            </div>
+            <span class="status-pill s-pending" style="font-size: 10px; padding: 2px 8px; border-radius: 6px;"><%= job.jobType %></span>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; font-size: 13px; color: var(--text-muted);">
+            <span>📍 <%= job.location %></span>
+            <span>💰 <%= job.salary %></span>
+          </div>
+
+          <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+            <%= job.description %>
+          </p>
+
+          <button onclick="toggleDetails(<%= index %>)" class="btn" style="background: var(--primary-light); color: var(--primary); font-size: 13px; width: 100%; border: 1px dashed var(--primary);">
+            Read Description
+          </button>
+
+          <div class="details" id="details-<%= index %>" style="display: none; font-size: 13px; color: var(--text-muted); background: #f9fafb; padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px solid var(--border);">
+            <%= job.description %>
+          </div>
+        </div>
+
+        <div style="padding-top: 16px; border-top: 1px solid var(--border); margin-top: auto;">
+          <% if (appliedJobIds.includes(job._id.toString())) { %>
+            <button class="btn" disabled style="background: var(--green-bg); color: var(--green); width: 100%; font-weight: 700;">
+              ✓ Already Applied
+            </button>
+          <% } else { %>
+            <form action="/apply/<%= job._id %>" method="POST" enctype="multipart/form-data">
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <input type="file" name="resume" required style="font-size: 11px; flex: 1;" onchange="checkATS(this, '<%= job._id %>')">
+                  <button type="submit" class="btn btn-primary" id="btn-<%= job._id %>" style="padding: 8px 16px;">Apply Now</button>
+                </div>
+                <!-- ATS Result Area -->
+                <div id="ats-result-<%= job._id %>" style="font-size: 12px; font-weight: 700; display: none; align-items: center; gap: 6px; padding: 4px 8px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
+                  <span style="color: var(--text-muted); text-transform: uppercase; font-size: 10px;">AI Match Score:</span>
+                  <span class="ats-score" style="color: var(--primary);">Checking...</span>
+                  <div class="ats-loader" style="width: 12px; height: 12px; border: 2px solid #e2e8f0; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; display: none;"></div>
+                </div>
+              </div>
+            </form>
+          <% } %>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+
+    <div class="pagination" style="margin-top: 48px; display: flex; gap: 12px; justify-content: center; align-items: center;">
+      <button onclick="prevPage()" class="btn" style="background: #fff; border: 1px solid var(--border); color: var(--text-muted);">Previous</button>
+      <div style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--primary); color: #fff; border-radius: 6px; font-weight: 700; font-size: 14px;" id="pageNo">1</div>
+      <button onclick="nextPage()" class="btn" style="background: #fff; border: 1px solid var(--border); color: var(--text-muted);">Next</button>
+    </div>
+    </div>
+  </main>
+</div>
+
+<script src="/js/jobs.js"></script>
+
+</body>
+</html>
+</html>

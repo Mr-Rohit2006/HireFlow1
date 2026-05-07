@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Saved Jobs – HireFlow</title>
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-text">HireFlow</span>
+      <small>Student Portal</small>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item">Dashboard</a>
+      <a href="/jobs" class="nav-item">Browse Jobs</a>
+      <a href="/my-applications" class="nav-item">My Applications</a>
+      <a href="/saved-jobs" class="nav-item active">Saved Jobs</a>
+      <a href="/profile" class="nav-item">My Profile</a>
+      <a href="/logout" class="nav-item nav-logout">Logout</a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="user-pill">
+        <div class="avatar"><%= user.name.charAt(0).toUpperCase() %></div>
+        <div>
+          <div class="user-name"><%= user.name %></div>
+          <div class="user-role">Student</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main" style="background: url('/images/student_bg.png') no-repeat center center fixed; background-size: cover; min-height: 100vh; position: relative;">
+    <!-- Overlay for better readability -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(4px); z-index: 0;"></div>
+    
+    <div style="position: relative; z-index: 1;">
+
+    <div class="topbar">
+      <h1>Saved Jobs 🔖</h1>
+      <p><%= jobs.length %> saved jobs</p>
+    </div>
+
+    <% if (jobs.length === 0) { %>
+
+      <div class="empty-box">
+        <h3>No saved jobs yet</h3>
+        <p>Explore jobs and save your favorites.</p>
+      </div>
+
+    <% } else { %>
+
+      <div class="jobs-grid">
+
+        <% jobs.forEach(job => { %>
+
+          <div class="job-card">
+
+            <div class="job-icon">💼</div>
+
+            <div class="job-title"><%= job.title %></div>
+
+            <div class="company"><%= job.company %></div>
+
+            <div class="meta">
+              <span class="pill">📍 <%= job.location %></span>
+
+              <% if (job.salary) { %>
+                <span class="pill">₹ <%= job.salary %></span>
+              <% } %>
+
+              <% if (job.jobType) { %>
+                <span class="pill"><%= job.jobType %></span>
+              <% } %>
+            </div>
+
+            <div class="btn-row">
+
+              <form method="POST" action="/save-job/<%= job._id %>">
+                <button type="submit" class="btn remove">
+                  Remove
+                </button>
+              </form>
+
+              <% if (appliedJobIds && appliedJobIds.includes(job._id.toString())) { %>
+
+                <button class="btn applied" disabled>
+                  Applied ✅
+                </button>
+
+              <% } else { %>
+
+                <a href="/apply/<%= job._id %>" class="btn apply">
+                  Apply Now
+                </a>
+
+              <% } %>
+
+            </div>
+
+          </div>
+
+        <% }) %>
+
+      </div>
+
+    <% } %>
+
+    </div>
+  </main>
+
+</div>
+
+</body>
+</html>

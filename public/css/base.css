@@ -1,0 +1,166 @@
+:root {
+  /* Clean Light Palette */
+  --primary:        #4f46e5; /* Indigo */
+  --primary-hover:  #4338ca;
+  --primary-light:  #f5f3ff;
+  --secondary:      #0ea5e9;
+  --accent:         #f43f5e;
+
+  /* Neutrals */
+  --bg:             #f8fafc; /* Very light gray */
+  --surface:        #ffffff;
+  --surface-muted:  #f1f5f9;
+  --border:         #e2e8f0;
+  --text:           #0f172a; /* Deep slate */
+  --text-muted:     #64748b;
+  --text-faint:     #94a3b8;
+
+  /* Sidebar */
+  --sidebar-bg:     #1e293b; /* Keep sidebar dark for contrast or make it light? Let's try dark first as it's common. */
+  --sidebar-text:   #94a3b8;
+  --sidebar-active: rgba(255, 255, 255, 0.1);
+  --sidebar-w:      260px;
+
+  /* Status */
+  --green:  #10b981;
+  --green-bg: #d1fae5;
+  --amber:  #f59e0b;
+  --amber-bg: #fef3c7;
+  --red:    #ef4444;
+  --red-bg: #fee2e2;
+
+  /* Radius / Shadow */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+
+  /* Transitions */
+  --ease: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; transition: color var(--ease); }
+
+/* Layout Shell */
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0;
+  height: 100vh;
+  z-index: 100;
+}
+
+.sidebar-logo { padding: 32px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.logo-text { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.5px; display: block; }
+.sidebar-logo small { font-size: 11px; color: rgba(255,255,255,0.5); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; display: block; }
+
+.sidebar-nav { padding: 24px 0; flex: 1; }
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 24px; font-size: 14px; font-weight: 500;
+  color: var(--sidebar-text);
+  transition: all var(--ease);
+}
+.nav-item:hover { color: #fff; background: var(--sidebar-active); }
+.nav-item.active { color: #fff; background: var(--primary); font-weight: 600; }
+
+/* Sidebar Bottom User Info */
+.sidebar-bottom {
+  padding: 20px 24px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin-top: auto;
+}
+
+.user-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-role {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+}
+
+/* Main */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  padding: 40px;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Card */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.card-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 20px; }
+
+/* Button */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 10px 20px; border-radius: var(--radius-sm);
+  font-weight: 600; cursor: pointer; transition: all var(--ease);
+  border: none; font-size: 14px;
+}
+
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+/* Animations */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

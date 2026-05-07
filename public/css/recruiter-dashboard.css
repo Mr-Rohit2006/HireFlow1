@@ -1,0 +1,16 @@
+@import url('dashboard.css');
+
+/* Recruiter specific tweaks can go here */
+.post-btn {
+  background: var(--primary);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.post-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}

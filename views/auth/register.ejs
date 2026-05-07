@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register – HireFlow</title>
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+
+<div class="auth-container">
+  <div class="auth-side-image">
+    <div class="auth-image-content">
+      <h2>Build Your Career</h2>
+      <p>Create an account today and get access to exclusive job openings and career resources.</p>
+    </div>
+  </div>
+
+  <div class="auth-side-form">
+    <form class="auth-card" method="POST" action="/register">
+      <h2>Create Account 🚀</h2>
+      <p>Join HireFlow and start your journey</p>
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert-error">
+          <span>⚠️</span> <%= error %>
+        </div>
+      <% } %>
+
+      <div style="display: grid; grid-template-columns: 1fr; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <label style="font-size: 13px; font-weight: 700; color: var(--text);">Full Name</label>
+          <input type="text" name="name" placeholder="John Doe" 
+                 value="<%= (typeof formData !== 'undefined' && formData.name) ? formData.name : '' %>" required>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <label style="font-size: 13px; font-weight: 700; color: var(--text);">Email Address</label>
+          <input type="email" name="email" placeholder="name@company.com" 
+                 value="<%= (typeof formData !== 'undefined' && formData.email) ? formData.email : '' %>" required>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <label style="font-size: 13px; font-weight: 700; color: var(--text);">Password</label>
+          <input type="password" name="password" placeholder="••••••••" required>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px;">
+          <label style="font-size: 13px; font-weight: 700; color: var(--text);">Select Role</label>
+          <select name="role">
+            <option value="student" <%= (typeof formData !== 'undefined' && formData.role === 'student') ? 'selected' : '' %>>I'm a Student</option>
+            <option value="recruiter" <%= (typeof formData !== 'undefined' && formData.role === 'recruiter') ? 'selected' : '' %>>I'm a Recruiter</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit">Create Account</button>
+
+      <p class="switch">Already have an account? <a href="/login">Sign In</a></p>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>

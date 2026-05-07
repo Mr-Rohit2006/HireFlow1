@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Browse Jobs – HireFlow</title>
+  <link rel="stylesheet" href="/css/student-dashboard.css">
+  <style>
+    .jobs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:16px; }
+    .job-card { background:#fff; border-radius:12px; border:1px solid #e8eaf0; padding:20px; display:flex; flex-direction:column; }
+    .job-card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; }
+    .job-title { font-size:15px; font-weight:600; color:#1e1b4b; }
+    .save-form { margin:0; }
+    .save-btn-icon { background:none; border:none; cursor:pointer; font-size:18px; color:#9ca3af; padding:0; line-height:1; }
+    .save-btn-icon.saved { color:#4f46e5; }
+    .job-company { font-size:13px; color:#6b7280; margin-bottom:10px; }
+    .job-meta { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+    .meta-pill { font-size:11px; background:#f3f4f6; color:#374151; padding:3px 10px; border-radius:20px; }
+    .job-desc { font-size:13px; color:#6b7280; display:none; margin-bottom:12px; line-height:1.6; }
+    .job-desc.open { display:block; }
+    .toggle-btn { background:none; border:none; font-size:12px; color:#4f46e5; cursor:pointer; padding:0; margin-bottom:12px; }
+    .job-actions { margin-top:auto; display:flex; gap:8px; }
+    .apply-form { flex:1; }
+    .apply-form input[type=file] { width:100%; font-size:12px; margin-bottom:8px; }
+    .apply-submit { width:100%; background:#4f46e5; color:#fff; border:none; padding:9px; border-radius:8px; font-size:13px; font-weight:500; cursor:pointer; }
+    .apply-submit:hover { background:#4338ca; }
+    .already-applied { font-size:12px; color:#16a34a; font-weight:500; padding:9px; text-align:center; background:#f0fdf4; border-radius:8px; border:1px solid #bbf7d0; }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-text">HireFlow</span>
+      <small>Student Portal</small>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </a>
+      <a href="/jobs" class="nav-item active">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Browse Jobs
+      </a>
+      <a href="/my-applications" class="nav-item">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        My Applications
+      </a>
+      <a href="/saved-jobs" class="nav-item">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        Saved Jobs
+      </a>
+      <a href="/profile" class="nav-item">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        My Profile
+      </a>
+      <a href="/logout" class="nav-item nav-logout">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Logout
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="user-pill">
+        <div class="avatar"><%= user.name.charAt(0).toUpperCase() %></div>
+        <div>
+          <div class="user-name"><%= user.name %></div>
+          <div class="user-role">Student</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h1>Browse Jobs</h1>
+        <p><%= jobs.length %> job<%= jobs.length !== 1 ? 's' : '' %> available</p>
+      </div>
+    </div>
+
+    <div class="jobs-grid">
+      <% jobs.forEach((job, index) => { %>
+        <%
+          const isSaved = user.savedJobs && user.savedJobs.some(id => id.toString() === job._id.toString());
+          const hasApplied = appliedJobIds && appliedJobIds.includes(job._id.toString());
+        %>
+        <div class="job-card">
+          <div class="job-card-top">
+            <div class="job-title"><%= job.title %></div>
+            <form class="save-form" method="POST" action="/save-job/<%= job._id %>">
+              <button type="submit" class="save-btn-icon <%= isSaved ? 'saved' : '' %>" title="<%= isSaved ? 'Unsave' : 'Save Job' %>">
+                <%= isSaved ? '🔖' : '🔖' %>
+              </button>
+            </form>
+          </div>
+
+          <div class="job-company"><%= job.company %></div>
+
+          <div class="job-meta">
+            <span class="meta-pill">📍 <%= job.location %></span>
+            <% if (job.jobType) { %><span class="meta-pill"><%= job.jobType %></span><% } %>
+            <% if (job.salary) { %><span class="meta-pill">💰 <%= job.salary %></span><% } %>
+          </div>
+
+          <button class="toggle-btn" onclick="toggleDesc(<%= index %>)">View Details ▾</button>
+          <div class="job-desc" id="desc-<%= index %>">
+            <%= job.description || 'No description provided.' %>
+          </div>
+
+          <div class="job-actions">
+            <% if (hasApplied) { %>
+              <div class="already-applied">✅ Already Applied</div>
+            <% } else { %>
+              <form class="apply-form" method="POST" action="/apply/<%= job._id %>" enctype="multipart/form-data">
+                <input type="file" name="resume" accept=".pdf" required>
+                <button type="submit" class="apply-submit">Apply Now</button>
+              </form>
+            <% } %>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </main>
+</div>
+
+<script>
+  function toggleDesc(i) {
+    const d = document.getElementById("desc-" + i);
+    d.classList.toggle("open");
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard – HireFlow</title>
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-text">HireFlow</span>
+      <small>Student Portal</small>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item active">Dashboard</a>
+      <a href="/jobs" class="nav-item">Browse Jobs</a>
+      <a href="/my-applications" class="nav-item">My Applications</a>
+      <a href="/logout" class="nav-item nav-logout">Logout</a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="user-pill">
+        <div class="avatar"><%= user.name.charAt(0).toUpperCase() %></div>
+        <div>
+          <div class="user-name"><%= user.name %></div>
+          <div class="user-role">Student</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main" style="background: url('/images/student_bg.png') no-repeat center center fixed; background-size: cover; min-height: 100vh; position: relative;">
+    <!-- Overlay for better readability -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(4px); z-index: 0;"></div>
+    
+    <div style="position: relative; z-index: 1;">
+
+    <!-- Top -->
+    <div class="topbar">
+      <div>
+        <h1>Welcome back, <%= user.name.split(' ')[0] %> 👋</h1>
+        <p>Here's your dashboard summary</p>
+      </div>
+
+      <span class="badge-new">
+        <%= totalJobs %> Jobs Available
+      </span>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+
+      <div class="stat-card">
+        <div class="stat-label">Jobs Available</div>
+        <div class="stat-value"><%= totalJobs %></div>
+        <div class="stat-sub">Open opportunities</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Applied</div>
+        <div class="stat-value"><%= totalApplied %></div>
+        <div class="stat-sub">Applications sent</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Shortlisted</div>
+        <div class="stat-value"><%= shortlisted %></div>
+        <div class="stat-sub">Interview stage</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Rejected</div>
+        <div class="stat-value"><%= rejected %></div>
+        <div class="stat-sub">Keep improving</div>
+      </div>
+
+    </div>
+
+    <!-- Row -->
+    <div class="section-row">
+
+      <!-- Recent Applications -->
+      <div class="card">
+        <div class="card-title">Recent Applications</div>
+
+        <% if(applications.length === 0){ %>
+
+          <div class="empty-state">
+            <p>No applications yet.</p>
+            <a href="/jobs">Browse Jobs →</a>
+          </div>
+
+        <% } else { %>
+
+          <% applications.slice(0,5).forEach(app => { %>
+
+            <div class="app-item">
+              <div>
+                <div class="app-company"><%= app.job.company %></div>
+                <div class="app-role"><%= app.job.title %></div>
+              </div>
+
+              <span class="status-pill
+                <% if(app.status === 'Shortlisted'){ %>s-shortlisted<% } %>
+                <% if(app.status === 'Rejected'){ %>s-rejected<% } %>
+                <% if(app.status === 'Pending' || !app.status){ %>s-pending<% } %>
+              ">
+                <%= app.status || "Pending" %>
+              </span>
+            </div>
+
+          <% }) %>
+
+        <% } %>
+      </div>
+
+      <!-- Application Status -->
+      <div class="card">
+        <div class="card-title">Application Status</div>
+
+        <div class="app-item">
+          <span>Pending</span>
+          <span class="status-pill s-pending"><%= pending %></span>
+        </div>
+
+        <div class="app-item">
+          <span>Shortlisted</span>
+          <span class="status-pill s-shortlisted"><%= shortlisted %></span>
+        </div>
+
+        <div class="app-item">
+          <span>Rejected</span>
+          <span class="status-pill s-rejected"><%= rejected %></span>
+        </div>
+
+        <div class="quick-links">
+          <a href="/jobs" class="ql-btn">Browse Jobs</a>
+          <a href="/my-applications" class="ql-btn">My Applications</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Recommended Jobs -->
+    <div class="card" style="margin-top:20px;">
+      <div class="card-title">Recommended Jobs</div>
+
+      <% if(recommendedJobs && recommendedJobs.length > 0){ %>
+
+        <% recommendedJobs.forEach(job => { %>
+
+          <div class="app-item">
+            <div>
+              <div class="app-company"><%= job.company %></div>
+              <div class="app-role">
+                <%= job.title %> • <%= job.location %>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:8px; align-items:center;">
+
+              <span class="status-pill s-pending">
+                <%= job.jobType %>
+              </span>
+
+              <a href="/jobs" class="ql-btn" style="padding:8px 12px;">
+                Apply
+              </a>
+
+            </div>
+          </div>
+
+        <% }) %>
+
+      <% } else { %>
+
+        <div class="empty-state">
+          <p>No recommendations available.</p>
+        </div>
+
+      <% } %>
+
+    </div>
+
+    </div>
+  </main>
+
+</div>
+
+</body>
+</html>
