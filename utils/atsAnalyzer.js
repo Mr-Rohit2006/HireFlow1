@@ -69,12 +69,9 @@ Format: {"percentage": <your_calculated_number>}`;
 
     const parsedResponse = JSON.parse(text);
     const percentage = parseInt(parsedResponse.percentage) || 0;
-
-    console.log(`ATS Score calculated: ${percentage}%`);
     return Math.min(100, Math.max(0, percentage));
 
   } catch (error) {
-    console.error("ATS Analyzer Error:", error.message || error);
     return 0;
   }
 };

@@ -9,7 +9,8 @@ const {
   getProfile,
   updateProfile,
   saveJob,
-  savedJobs
+  savedJobs,
+  viewResume
 } = require("../controllers/studentController");
 
 router.get("/dashboard", isAuth, isStudent, studentDashboard);
@@ -17,6 +18,9 @@ router.get("/dashboard", isAuth, isStudent, studentDashboard);
 // Profile
 router.get("/profile",  isAuth, isStudent, getProfile);
 router.post("/profile", isAuth, isStudent, upload.single("resume"), updateProfile);
+
+// Resume view
+router.get("/resume/view", isAuth, isStudent, viewResume);
 
 // Saved Jobs
 router.get("/saved-jobs",       isAuth, isStudent, savedJobs);

@@ -184,7 +184,35 @@ exports.saveJob = async (req, res) => {
 // =====================================
 // SAVED JOBS PAGE
 // =====================================
+exports.viewResume = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user.resume || !user.resume.data) {
+      return res.status(404).send("Resume not found.");
+    }
+
+    const pdfBuffer = Buffer.from(user.resume.data, "base64");
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `inline; filename="${user.resume.originalName || 'resume.pdf'}"`
+    );
+    res.send(pdfBuffer);
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Could not load resume.");
+  }
+};
+
+// =====================================
+// VIEW SAVED JOBS
+// =====================================
 exports.savedJobs = async (req, res) => {
+
+
   try {
     const user = await User.findById(req.user._id);
 

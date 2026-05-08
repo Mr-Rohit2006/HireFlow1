@@ -114,11 +114,11 @@
                 <label style="font-size: 14px; font-weight: 700; color: var(--text); display: block; margin-bottom: 12px;">Upload Latest Resume (PDF)</label>
                 <input type="file" name="resume" accept=".pdf" style="font-size: 13px;">
                 
-                <% if(user.resume){ %>
+                <% if(user.resume && user.resume.data){ %>
                   <div style="margin-top: 12px; display: flex; align-items: center; gap: 8px;">
                     <span style="color: var(--green);">📄</span>
-                    <a href="/<%= user.resume.replace(/\\/g, '/') %>" target="_blank" style="color: var(--primary); font-weight: 600; font-size: 13px; text-decoration: underline;">
-                      View Current Resume
+                    <a href="/resume/view" target="_blank" style="color: var(--primary); font-weight: 600; font-size: 13px; text-decoration: underline;">
+                      View Current Resume (<%= user.resume.originalName || 'resume.pdf' %>)
                     </a>
                   </div>
                 <% } %>
